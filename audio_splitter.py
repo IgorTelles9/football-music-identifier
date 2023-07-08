@@ -1,7 +1,9 @@
 from pydub import AudioSegment
 import os
+import csv
 
-AUDIO_DIR = r'D:\UFRJ\7º Período\ProcVoz\football-music-identifier\audio'
+# AUDIO_DIR = r'D:\UFRJ\7º Período\ProcVoz\football-music-identifier\audio'
+AUDIO_DIR = r"./wav"
 SONGS = ['anajulia', 'horto', 'louco']
 
 def split_song(import_path, split_duration, export_dir, base_filename):
@@ -22,10 +24,10 @@ def split_song(import_path, split_duration, export_dir, base_filename):
     
     for i in range(0, split_parts):
         splitted_audio = audio[i*split_duration : (i+1)*split_duration]
-        splitted_audio.export(fr'{export_dir}\{base_filename}_{i:02d}.wav', format='wav')
+        splitted_audio.export(fr'{export_dir}/{base_filename}_{i:02d}.wav', format='wav')
     
     final_split = audio[split_parts*split_duration:]
-    final_split.export(fr'{export_dir}\{base_filename}_{split_parts:02d}.wav', format='wav')
+    final_split.export(fr'{export_dir}/{base_filename}_{split_parts:02d}.wav', format='wav')
 
 
 wav_filenames = os.listdir(AUDIO_DIR)
@@ -38,8 +40,10 @@ for song in SONGS:
             song_filename[song].append(filename)
 
 for song in song_filename.keys():
-    export_dir = fr'{AUDIO_DIR}\{song}_splitted'
+    export_dir = fr'{AUDIO_DIR}/{song}_splitted'
     for filename in song_filename.get(song):
         base_filename = filename[:-4]
-        split_song(fr'{AUDIO_DIR}\{filename}', 5, export_dir, base_filename)
+        split_song(fr'{AUDIO_DIR}/{filename}', 5, export_dir, base_filename)
+
+
 

@@ -17,11 +17,15 @@ from python_speech_features import mfcc
 import pickle
 from sklearn.metrics import accuracy_score
 
+
 def build_predictions(audios_dir):
     y_true = []
     y_pred = []
     fn_prob = {}
     print("Extracting features from audio")
+    dsstore = os.path.join(audios_dir, '.DS_Store')
+    if(os.path.exists(dsstore)):
+        os.remove(dsstore)
     for fn in tqdm(os.listdir(audios_dir)):
         print(str(fn))
         rate, wav = wavfile.read(os.path.join(audios_dir, fn))
@@ -61,6 +65,9 @@ model = load_model(config.model_path)
 
 y_true, y_pred, fn_prob = build_predictions("testing_files")
 acc_score = accuracy_score(y_true=y_true, y_pred=y_pred)
+print("====")
+print(acc_score)
+print("====")
 
 y_probs = []
 for i, row in df.iterrows():

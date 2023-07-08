@@ -40,7 +40,9 @@ def build_rand_feat():
     for _ in tqdm(range(n_samples)):
         rand_class = np.random.choice(class_dist.index, p=prob_dist)
         file = np.random.choice(df[df.label == rand_class].index)
-        rate, wav = wavfile.read("clean/"+file)
+        rate, wav = wavfile.read("training_files/"+file)
+        if wav.shape[0] == 0:
+            continue
         label = df.at[file, "label"]
         rand_index = np.random.randint(0, wav.shape[0]-config.step)
         sample = wav[rand_index:rand_index+config.step]
@@ -106,11 +108,11 @@ def get_recurrent_model(input_shape):
                   optimizer="adam", metrics=["acc"])
     return model
     
-df = pd.read_csv("fnames.csv")
+df = pd.read_csv("training.csv")
 df.set_index("fname", inplace=True)
 
 for f in df.index:
-    rate, signal = wavfile.read("clean/"+f)
+    rate, signal = wavfile.read("training_files/"+f)
     df.at[f, "length"] = signal.shape[0]/rate
 
 classes = list(np.unique(df.label))
@@ -128,7 +130,7 @@ ax.pie(class_dist, labels=class_dist.index, autopct="%1.1f%%",
 ax.axis("equal")
 plt.show()    
 
-config = Config(mode="time")
+config = Config(mode="conv")
 
 if config.mode == "conv":
     X, y = build_rand_feat()
