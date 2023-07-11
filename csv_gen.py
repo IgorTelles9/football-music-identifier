@@ -4,7 +4,7 @@ import random
 import re
 
 def extract_label(filename):
-    match = re.match(r'^([a-zA-Z]+)', filename)
+    match = re.match(r'^([\w-]+)\d+_chunk\d+\.wav$', filename)
     if match:
         return match.group(1)
     else:
@@ -39,8 +39,8 @@ def create_file_lists(directory, csv_95_filename, csv_5_filename):
         writer.writerows(file_list_5)
 
 # Example usage:
-directory_path = './samples'  # Replace with your directory path
-csv_95_file_path = './training.csv'  # Replace with the desired output CSV file path for 95%
+directory_path = './wav'  # Replace with your directory path
+csv_95_file_path = './training2.csv'  # Replace with the desired output CSV file path for 95%
 csv_5_file_path = './testing.csv'  # Replace with the desired output CSV file path for 5%
 
 create_file_lists(directory_path, csv_95_file_path, csv_5_file_path)

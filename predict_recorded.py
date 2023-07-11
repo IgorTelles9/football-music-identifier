@@ -44,7 +44,7 @@ def predict_class(model, audio_path, config, classes):
     return predicted_class, confidence_percentage
 
 # Load the model and configuration
-df = pd.read_csv("songs.csv")
+df = pd.read_csv("training.csv")
 classes = list(np.unique(df.label))
 p_path = os.path.join("pickles", "conv.p")
 with open(p_path, "rb") as handle:
@@ -53,16 +53,17 @@ model = load_model(config.model_path)
 # ... Load config and classes
 
 # Recording live audio
-duration = 2  # Duration in seconds
+duration = 5  # Duration in seconds
 sample_rate = 16000  # Sample rate
 audio_filename = "recorded_audio.wav"
 
 confidence_percentage = 0
 print("Ouvindo...")
-while(confidence_percentage < 90):
+while(confidence_percentage < 75):
     recorded_audio = record_audio(duration, sample_rate)
     save_audio(audio_filename, recorded_audio, sample_rate)
     predicted_class, confidence_percentage = predict_class(model, audio_filename, config, classes)
+    print(predicted_class, confidence_percentage)
 
 
 print("Música: ", predicted_class)

@@ -26,17 +26,25 @@ def envelope(y, rate, threshold):
             mask.append(False)
     return mask
 
-filename = "testing"
 
-df = pd.read_csv(filename+".csv")
-df.set_index("fname", inplace=True)
-for f in df.index:
-    rate, signal = wavfile.read("samples/"+f)
-    df.at[f, "length"] = signal.shape[0]/rate
 
-if len([file for file in os.listdir(filename+"_files/") if file.endswith('.wav')]) == 0:
-    for f in tqdm(df.index):
-        signal, rate = librosa.load("samples/"+f, sr=16000)
-        mask = envelope(signal, rate, 0.0005)
-        wavfile.write(filename=filename+"_files/"+f, rate=rate, 
-                      data=signal[mask])
+def base_gen(filename):
+    df = pd.read_csv(filename+"2.csv")
+    df.set_index("fname", inplace=True)
+    for f in df.index:
+        if (f == ".DS_Store"):
+            continue
+        rate, signal = wavfile.read("wav/"+f)
+        df.at[f, "length"] = signal.shape[0]/rate
+    
+    if len([file for file in os.listdir(filename+"_files/") if file.endswith('.wav')]) == 0:
+        for f in tqdm(df.index):
+            if (f == ".DS_Store"):
+                continue
+            signal, rate = librosa.load("wav/"+f, sr=16000)
+            mask = envelope(signal, rate, 0.0005)
+            wavfile.write(filename=filename+"_files/"+f, rate=rate, 
+                          data=signal[mask])
+
+base_gen("training")
+#base_gen("testing")

@@ -108,13 +108,16 @@ def get_recurrent_model(input_shape):
                   optimizer="adam", metrics=["acc"])
     return model
     
-df = pd.read_csv("training.csv")
+df = pd.read_csv("training2.csv")
 df.set_index("fname", inplace=True)
 
 for f in df.index:
+    if (f == ".DS_Store"):
+        continue
     rate, signal = wavfile.read("training_files/"+f)
     df.at[f, "length"] = signal.shape[0]/rate
 
+df['label'] = df['label'].astype(str)
 classes = list(np.unique(df.label))
 class_dist = df.groupby(["label"])["length"].mean()
 
